@@ -1,5 +1,5 @@
-const Post = require('../models/PostModel');
-const User = require('../models/UserModel');
+const Post = require('../../models/PostModel');
+const User = require('../../models/UserModel');
 
 module.exports = {
     main: (req, res) => {
@@ -18,17 +18,14 @@ module.exports = {
     },
     post: (req, res) => {
         Post.findById(req.params.id).populate('author').lean().then((post)=>{
-            res.render('blogViews/singlePost', post);
+            res.json(post);
 
         }).catch((err) => {
-                // res.send(err);
-                res.send('Get post error');
+                res.json({ error: 'Get post error' });
             });
     },
     create: (req, res) => {
-        // console.log(req.body);
-
-        let newPost = new Post({...req.body, author: res.locals.userId});
+                let newPost = new Post({...req.body, author: res.locals.userId});
         newPost.save();
 
         User.findById(res.locals.userId).then((user)=>{

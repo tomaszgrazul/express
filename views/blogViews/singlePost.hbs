@@ -3,7 +3,7 @@
         <div class="card-body">
             <h2 class="card-title">{{title}}</h2>
             <p class="card-text">{{content}}</p>
-            <p class="card-text">{{author}}</p>
+            <p class="card-text"><a href="'/blog?authorId={{author:_id}}"></a> {{author.name}}</p>
             <a href="/blog/edit/{{_id}}" class="btn btn-primary">Edit</a>
             <a href="/blog/delete/{{_id}}" class="btn btn-danger">Delete</a>
         </div>

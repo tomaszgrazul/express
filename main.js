@@ -14,6 +14,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/express-blog');
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use(express.json());
 
 app.engine('hbs', hbs.engine({extname: '.hbs'}));
 app.set('view engine', 'hbs'); 
@@ -72,6 +73,10 @@ const authHelper = require("./middlewares/authHelper");
 
 const blogRouter = require('./routes/blogRoutes');
 const userRoutes = require('./routes/userRoutes');
+
+const blogApiRouter = require('./api/routes/blogApiRoutes')
+app.use('/api/blog', blogRouter);
+
 
 app.use('/blog', authHelper, blogRouter);
 app.use('/user', userRoutes);
