@@ -7,17 +7,16 @@ module.exports = {
         const findQuery = req.query.authorId ? { author: req.query.authorId } : {};
 
         Post.find(findQuery).populate('author').lean().then((posts)=>{
-                    // console.log(posts);
-
-                    // res.send('działa'); 
-                    res.render('blogViews/blog', {posts: posts});
+                 
+                    res.json(posts);
 
                 }).catch((err) => {
-                        res.send(err);
+                    res.json({ error: 'Get posts error' });
                     });
     },
     post: (req, res) => {
         Post.findById(req.params.id).populate('author').lean().then((post)=>{
+            
             res.json(post);
 
         }).catch((err) => {
@@ -25,44 +24,34 @@ module.exports = {
             });
     },
     create: (req, res) => {
-                let newPost = new Post({...req.body, author: res.locals.userId});
+                let newPost = new Post({...req.body, author: req.user._id});
         newPost.save();
 
-        User.findById(res.locals.userId).then((user)=>{
+        User.findById(req.user._id).then((user)=>{
             user.posts.push(newPost._id);
             user.save();
 
         }).catch((err) => {
-                return res.send('Get user error');
+                return res.json({ error: 'Get user error' });
             });
 
-        res.redirect('/blog');
+        res.json(newPost);
     },
     update: (req, res) => {
         Post.findByIdAndUpdate(req.params.id, req.body).then((post)=>{
-            res.redirect('/blog/' + post._id);
+            res.json(post);
 
         }).catch((err) => {
-                // res.send(err);
-                res.send('Update post error');
+                
+                res.json({ error: 'Update post error' });
             });
     },
     delete: (req, res) => {
         Post.findByIdAndDelete(req.params.id).then((post)=>{
-            res.redirect('/blog');
+            res.json({ delete: true});
 
         }).catch((err) => {
-                // res.send(err);
-                res.send('Delete post error');
-            });
-    },
-    editForm: (req, res) => {
-        Post.findById(req.params.id).then((post)=>{
-            res.render('blogViews/editPostForm', post);
-
-        }).catch((err) => {
-                // res.send(err);
-                res.send('Get post error');
+            res.json({ error: 'Delete post error' });
             });
     }
 };

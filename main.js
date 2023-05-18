@@ -74,12 +74,22 @@ const authHelper = require("./middlewares/authHelper");
 const blogRouter = require('./routes/blogRoutes');
 const userRoutes = require('./routes/userRoutes');
 
-const blogApiRouter = require('./api/routes/blogApiRoutes')
-app.use('/api/blog', blogRouter);
-
-
 app.use('/blog', authHelper, blogRouter);
 app.use('/user', userRoutes);
+
+const authApiHelper = require("./middlewares/authApiHelper");
+
+const blogApiRouter = require('./api/routes/blogApiRoutes')
+const userApiRouter = require('./api/routes/userApiRoutes')
+
+app.use('/api/blog', authApiHelper, blogApiRouter);
+app.use('/api/user', userApiRouter);
+
+
+
+
+
+
 
 app.listen(8080, function(){
     console.log('Serwer Node.js działa');
